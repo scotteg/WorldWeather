@@ -29,13 +29,13 @@ class DetailViewController: UIViewController {
   
   // MARK: - Properties
   var cityWeather: CityWeather? {
-  didSet {
-    // Update the view.
-    if isViewLoaded() {
-      configureView()
-      provideDataToChildViewControllers()
+    didSet {
+      // Update the view.
+      if isViewLoaded() {
+        configureView()
+        provideDataToChildViewControllers()
+      }
     }
-  }
   }
   
   // MARK: - Lifecycle
@@ -47,6 +47,7 @@ class DetailViewController: UIViewController {
     // Prep the navigation item so the back button doesn't disappear
     navigationItem.leftItemsSupplementBackButton = true
     navigationItem.hidesBackButton = false
+    configureTraitOverrideForSize(view.bounds.size)
   }
   
   // MARK: - Utility methods
@@ -64,5 +65,21 @@ class DetailViewController: UIViewController {
       }
     }
   }
+  
+  private func configureTraitOverrideForSize(size: CGSize) {
+    var traitOverride: UITraitCollection?
+    if size.height < 1000 {
+      traitOverride = UITraitCollection(verticalSizeClass: .Compact)
+    }
+    for vc in childViewControllers as [UIViewController] {
+      setOverrideTraitCollection(traitOverride, forChildViewController: vc)
+    }
+  }
+  
+  // MARK: - UIContentContainer
+  override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+    configureTraitOverrideForSize(size)
+  }
+  
 }
 
